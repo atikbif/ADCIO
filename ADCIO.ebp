@@ -75,9 +75,19 @@
 		<Unit filename="cmsis\core_cm0.h" />
 		<Unit filename="cmsis\core_cmFunc.h" />
 		<Unit filename="cmsis\core_cmInstr.h" />
+		<Unit filename="inc\adc.h" />
+		<Unit filename="inc\crc.h" />
+		<Unit filename="inc\din.h" />
+		<Unit filename="inc\dout.h" />
+		<Unit filename="inc\eeprom.h" />
+		<Unit filename="inc\modbus.h" />
+		<Unit filename="inc\pwm.h" />
+		<Unit filename="inc\settings.h" />
 		<Unit filename="inc\stm32f0xx.h" />
 		<Unit filename="inc\stm32f0xx_conf.h" />
+		<Unit filename="inc\stm32f0xx_it.h" />
 		<Unit filename="inc\system_stm32f0xx.h" />
+		<Unit filename="inc\uart.h" />
 		<Unit filename="readme.txt" />
 		<Unit filename="SPL\inc\stm32f0xx_adc.h" />
 		<Unit filename="SPL\inc\stm32f0xx_can.h" />
@@ -171,13 +181,43 @@
 		<Unit filename="SPL\src\stm32f0xx_wwdg.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src\adc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\crc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\din.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\dout.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\eeprom.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src\main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\modbus.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\pwm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\settings.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src\startup_stm32f0xx.S">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src\stm32f0xx_it.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src\system_stm32f0xx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\uart.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="stm32f030f4_flash.ld" />
