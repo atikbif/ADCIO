@@ -15,5 +15,6 @@ typedef struct
 unsigned short read_holdregs(request* req);
 unsigned short write_single_reg(request* req);
 unsigned short write_multi_regs(request* req);
+void set_cur_net_address(unsigned char value);
 
 #endif /* MODBUS_H_INCLUDED */

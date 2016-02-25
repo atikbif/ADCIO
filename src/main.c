@@ -17,6 +17,10 @@
 #include "modbus.h"
 #include "uart.h"
 #include "pwm.h"
+#include "adc.h"
+#include "din.h"
+#include "dout.h"
+#include "settings.h"
 
 volatile unsigned short gl_tmr = 0;
 
@@ -27,6 +31,7 @@ void toggle_led(void);
 void led_on(void);
 void led_off(void);
 void delay_ms(unsigned short value);
+static void powerOn(void);  // индикация работоспособности устройства
 
 
 int main(void)
@@ -40,17 +45,31 @@ int main(void)
     led_init();
     init_uart();
     init_pwm();
+    init_adc();
+    init_din();
+    init_dout();
+    init_settings();
+
     rx_buf = get_rx_ptr();
     tx_buf = get_tx_ptr();
     req.tx_buf = tx_buf; req.rx_buf = rx_buf;
+
+    powerOn();
+
+    IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
+    IWDG_SetPrescaler(IWDG_Prescaler_64); // IWDG counter clock: 40KHz(LSI) / 64  (1.6 ms)
+    IWDG_SetReload(150); //Set counter reload value
+    IWDG_ReloadCounter();
+    IWDG_Enable();
 
     while(1)
     {
         if((get_rx_cnt())&&(get_pc_tmr()>10))
 		{
 		    toggle_led();
-		    if((rx_buf[0]==0x01)&&(GetCRC16(rx_buf,get_rx_cnt())==0))
+		    if((rx_buf[0]==get_net_address() || (rx_buf[0]==0))&&(GetCRC16(rx_buf,get_rx_cnt())==0))
 			{
+			    set_cur_net_address(rx_buf[0]);
 				// разбор команд
 				switch(rx_buf[1])
 				{
@@ -77,7 +96,9 @@ int main(void)
 			}
 			clear_rx_cnt();
 		}
+		update_adc();
 		delay_ms(5);
+		IWDG_ReloadCounter();
     }
 }
 
@@ -86,29 +107,29 @@ void led_init(void)
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
     GPIO_InitTypeDef    GPIO_InitStructure;
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    GPIO_SetBits(GPIOA, GPIO_Pin_0);
+    GPIO_SetBits(GPIOA, GPIO_Pin_9);
 }
 
 void toggle_led(void)
 {
-    GPIOA->ODR ^= GPIO_Pin_0;
+    GPIOA->ODR ^= GPIO_Pin_9;
 }
 
 void led_on(void)
 {
-
+    GPIO_ResetBits(GPIOA, GPIO_Pin_9);
 }
 
 void led_off(void)
 {
-
+    GPIO_SetBits(GPIOA, GPIO_Pin_9);
 }
 
 void delay_ms(unsigned short value)
@@ -117,3 +138,14 @@ void delay_ms(unsigned short value)
     while(gl_tmr!=wait_tmr);
 }
 
+void powerOn(void)
+{
+    unsigned char tmp = 0;
+    for(tmp=0;tmp<5;tmp++) {
+        led_off();
+        delay_ms(200);
+        led_on();
+        delay_ms(50);
+    }
+    led_off();
+}
