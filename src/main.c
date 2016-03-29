@@ -64,7 +64,7 @@ int main(void)
 
     while(1)
     {
-        if((get_rx_cnt())&&(get_pc_tmr()>10))
+        if((get_rx_cnt())&&(get_pc_tmr()>30))
 		{
 		    toggle_led();
 		    if((rx_buf[0]==get_net_address() || (rx_buf[0]==0))&&(GetCRC16(rx_buf,get_rx_cnt())==0))
